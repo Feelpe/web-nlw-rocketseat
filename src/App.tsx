@@ -38,10 +38,12 @@ function App() {
       <div className='grid grid-cols-6 gap-6 mt-16'> 
         {games.map(game => {
           return(
-            <GameBanner 
+            <GameBanner
+              key={game.id}
               bannerUrl={game.bannerUrl} 
               title={game.title} 
-              adsCount={game._count.ads}/>
+              adsCount={game._count.ads}
+            />
           )
         })}
       </div>
