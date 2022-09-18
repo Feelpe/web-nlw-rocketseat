@@ -1,11 +1,28 @@
+import { useEffect, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as CheckBox from "@radix-ui/react-checkbox";
+// import * as Select from "@radix-ui/react-select"; 
 
 import { Check, GameController } from "phosphor-react";
 
 import { Input } from "../Form/input";
 
+interface Game {
+  id: string;
+  title: string;
+}
+
 export function CreateAdModal() {
+  const [games, setGames] = useState<Game[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3333/games")
+      .then((response) => response.json())
+      .then((data) => {
+        setGames(data);
+      });
+  }, []);
+
   return (
     <Dialog.Portal>
       <Dialog.Overlay className="bg-black/60 inset-0 fixed" />
@@ -18,7 +35,15 @@ export function CreateAdModal() {
             <label htmlFor="game" className="font-semibold">
               Qual o game?
             </label>
-            <Input id="game" placeholder="Selecione o game que deseja jogar" />
+            <select 
+              id="game" 
+              className="bg-zinc-900 py-3 px-4 rounded text-sm placeholder:text-zinc-500"
+            >
+              <option disabled selected value="">Selecione o game que deseja jogar</option>
+              {games.map(game => {
+                return <option key={game.id} value={game.id}>{game.title}</option>
+              })}
+            </select>
           </div>
           <div className="flex flex-col gap-2">
             <label htmlFor="">Seu nome (nickname)</label>
@@ -91,7 +116,7 @@ export function CreateAdModal() {
             </Dialog.Close>
             <button
               type="submit"
-              className="bg-violet-500 px-5 h-12 rounded-md font-semibold flex items-center gap-3 hover:bg-violet-600"
+              className="bg-violet-500 px-5 h-12 ml-4 rounded-md font-semibold flex items-center gap-3 hover:bg-violet-600"
             >
               <GameController size={24} />
               Encontrar duo
