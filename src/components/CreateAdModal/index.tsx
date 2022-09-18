@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as CheckBox from "@radix-ui/react-checkbox";
-// import * as Select from "@radix-ui/react-select"; 
+// import * as Select from "@radix-ui/react-select";
+import * as ToggleGroup from "@radix-ui/react-toggle-group";
 
 import { Check, GameController } from "phosphor-react";
 
@@ -14,6 +15,7 @@ interface Game {
 
 export function CreateAdModal() {
   const [games, setGames] = useState<Game[]>([]);
+  const [weekDays, setWeekDays] = useState<string[]>([]);
 
   useEffect(() => {
     fetch("http://localhost:3333/games")
@@ -26,7 +28,7 @@ export function CreateAdModal() {
   return (
     <Dialog.Portal>
       <Dialog.Overlay className="bg-black/60 inset-0 fixed" />
-      <Dialog.Content className="fixed bg-[#2A2634] py-8 px-10 text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg w-[480px] shadow-black/25">
+      <Dialog.Content className="fixed bg-[#2A2634] py-8 px-8 text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg w-[550px] shadow-black/25">
         <Dialog.Title className="text-3xl font-black">
           Publique um anúncio
         </Dialog.Title>
@@ -35,13 +37,20 @@ export function CreateAdModal() {
             <label htmlFor="game" className="font-semibold">
               Qual o game?
             </label>
-            <select 
-              id="game" 
+            <select
+              id="game"
               className="bg-zinc-900 py-3 px-4 rounded text-sm placeholder:text-zinc-500"
+              defaultValue=""
             >
-              <option disabled selected value="">Selecione o game que deseja jogar</option>
-              {games.map(game => {
-                return <option key={game.id} value={game.id}>{game.title}</option>
+              <option disabled value="">
+                Selecione o game que deseja jogar
+              </option>
+              {games.map((game) => {
+                return (
+                  <option key={game.id} value={game.id}>
+                    {game.title}
+                  </option>
+                );
               })}
             </select>
           </div>
@@ -66,30 +75,76 @@ export function CreateAdModal() {
           <div className="flex gap-6">
             <div className="flex flex-col gap-2">
               <label htmlFor="weekDays">Quando costuma jogar?</label>
-
-              <div className="grid grid-cols-4 gap-2">
-                <button title="Domingo" className="w-8 h-8 rounded bg-zinc-900">
+              <ToggleGroup.Root
+                type="multiple"
+                className="grid grid-cols-7 gap-1"
+                value={weekDays}
+                onValueChange={setWeekDays}
+              >
+                <ToggleGroup.Item
+                  value="0"
+                  title="Domingo"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes("0") ? "bg-violet-500" : "bg-zinc-900"
+                  }`}
+                >
                   D
-                </button>
-                <button title="Segunda" className="w-8 h-8 rounded bg-zinc-900">
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="1"
+                  title="Segunda"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes("1") ? "bg-violet-500" : "bg-zinc-900"
+                  }`}
+                >
                   S
-                </button>
-                <button title="Terça" className="w-8 h-8 rounded bg-zinc-900">
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="2"
+                  title="Terça"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes("2") ? "bg-violet-500" : "bg-zinc-900"
+                  }`}
+                >
                   T
-                </button>
-                <button title="Quarta" className="w-8 h-8 rounded bg-zinc-900">
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="3"
+                  title="Quarta"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes("3") ? "bg-violet-500" : "bg-zinc-900"
+                  }`}
+                >
                   Q
-                </button>
-                <button title="Quinta" className="w-8 h-8 rounded bg-zinc-900">
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="4"
+                  title="Quinta"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes("4") ? "bg-violet-500" : "bg-zinc-900"
+                  }`}
+                >
                   Q
-                </button>
-                <button title="Sexta" className="w-8 h-8 rounded bg-zinc-900">
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="5"
+                  title="Sexta"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes("5") ? "bg-violet-500" : "bg-zinc-900"
+                  }`}
+                >
                   S
-                </button>
-                <button title="sabado" className="w-8 h-8 rounded bg-zinc-900">
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="6"
+                  title="Sábado"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes("6") ? "bg-violet-500" : "bg-zinc-900"
+                  }`}
+                >
                   S
-                </button>
-              </div>
+                </ToggleGroup.Item>
+              </ToggleGroup.Root>
             </div>
             <div className="flex flex-col gap-2 flex-1">
               <label htmlFor="hourStart">Qual horário do dia?</label>
@@ -99,14 +154,14 @@ export function CreateAdModal() {
               </div>
             </div>
           </div>
-          <div className="mt-2 flex items-center gap-2 text-sm">
+          <label className="mt-2 flex items-center gap-2 text-sm">
             <CheckBox.Root className="w-6 h-6 p-1 rounded bg-zinc-900">
               <CheckBox.Indicator>
                 <Check className="w-4 h-4 text-emerald-400" />
               </CheckBox.Indicator>
             </CheckBox.Root>
             Costumo a me conectar ao chat de boz
-          </div>
+          </label>
           <footer className="mt-4 flex justify-end">
             <Dialog.Close
               type="button"
